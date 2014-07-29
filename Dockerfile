@@ -4,34 +4,68 @@
 #
 # see http://community.ubnt.com/t5/UniFi-Video-Blog/UniFi-Video-3-0-5-amp-UVC-AirCam-3-0-7-Release/ba-p/882264
 #
-FROM rednut/ubuntu
+FROM rednut/ubuntu:latest
 MAINTAINER stuart nixon dotcomstu@gmail.com
+ADD ./apt/ubuntu-sources.list /etc/apt/sources.list
 
+
+# add local apt proxy
+RUN mkdir -p /etc/apt/apt.conf.d/ && echo 'Acquire::http { Proxy "http://10.9.1.9:3142"; };' >> /etc/apt/apt.conf.d/01proxy
+
+# make apt non-interactive
 ENV DEBIAN_FRONTEND noninteractive
 
-RUN 	mkdir -p /var/log/supervisor /usr/lib/unifi/data && \
-  	touch /usr/lib/unifii-video/data/.unifidatadir
+# stop running services on install
+#ENV RUNLEVEL 1
 
+RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 16126D3A3E5C1192
+
+RUN apt-get update -q -y && apt-get install -q -y curl wget supervisor apt-utils lsb-release curl wget rsync
+
+RUN 	mkdir -p /var/log/supervisor /data/logs /data/data && \
+  	touch /data/.unifi-video
+
+# add mongodb repo
+RUN 	apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10 && \
+	echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' | tee /etc/apt/sources.list.d/mongodb.list
+
+# add ubnt repo
+RUN 	wget -q -O -  http://www.ubnt.com/downloads/unifi-video/apt/unifi-video.gpg.key | apt-key add - && \
+	echo "deb [arch=amd64] http://www.ubnt.com/downloads/unifi-video/apt trusty ubiquiti" | tee /etc/apt/sources.list.d/ubiquity-video.list
+
+# update repos
 RUN apt-get update -q -y
-RUN apt-get install -q -y supervisor apt-utils lsb-release curl wget rsync
 
+# grab unifi video contrller
+RUN RUNLEVEL=1 apt-get install -q -y unifi-video
 
-RUN wget -O - http://www.ubnt.com/downloads/unifi-video/apt/unifi-video.gpg.key | apt-key add -
-RUN echo "http://www.ubnt.com/downloads/unifi-video/apt trusty ubiquiti" > /etc/apt/sources.list.d/ubiquity-video.list
-
-
-# add ubiquity repo + key
-#RUN echo "deb http://www.ubnt.com/downloads/unifi/distros/deb/ubuntu ubuntu ubiquiti" > /etc/apt/sources.list.d/ubiquity.list && \
-#   apt-key adv --keyserver keyserver.ubuntu.com --recv C0A52C50 && \
-
-RUN apt-get update -q -y && \
-    apt-get install -q -y unifi-video
-
+# launcher config
 ADD ./supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-VOLUME /usr/lib/unifi-video/data
+RUN	mkdir -p /data/data /data/logs && \
+	 ls -la /data/
+	
+# link data dir
+#RUN 	cat /etc/passwd
+#RUN 	cat /etc/group
+#RUN 	chown -Rv unifi-video:unifi-video /data/logs /data/data
+#RUN	chmod -Rv a+rwX /data/data /data/logs
 
-# Port Forwarding
+
+
+# link data dir
+RUN 	ln -fs /data/data /usr/lib/unifi-video/data && \
+	ln -fs /data/data /var/lib/unifi-video && \
+ 	ln -fs /data/logs /usr/lib/unifi-video && \
+	ln -fs /data/logs /var/log/unifi-video
+
+VOLUME /data
+VOLUME /data/data
+VOLUME /data/logs
+
+VOLUME /var/lib/unifi-video
+VOLUME /var/log/unifi-video
+VOLUME /usr/lib/unifi-video
 
 # The following ports are used on UniFi Video hosts:
 
