@@ -1,13 +1,11 @@
-# build docker image to run the unifi controller
+# build docker image to run the unifi video nvr controller
 #
-# the unifi contoller is used to admin ubunquty wifi access points
+# the unifi nvr video contoller is used to admin ubunquty ip cameras
 #
-# see http://community.ubnt.com/t5/UniFi-Video-Blog/UniFi-Video-3-0-5-amp-UVC-AirCam-3-0-7-Release/ba-p/882264
 #
 FROM rednut/ubuntu:latest
 MAINTAINER stuart nixon dotcomstu@gmail.com
 ADD ./apt/ubuntu-sources.list /etc/apt/sources.list
-
 
 # add local apt proxy
 RUN mkdir -p /etc/apt/apt.conf.d/ && echo 'Acquire::http { Proxy "http://10.9.1.9:3142"; };' >> /etc/apt/apt.conf.d/01proxy
