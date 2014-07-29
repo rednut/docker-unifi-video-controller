@@ -8,7 +8,7 @@ MAINTAINER stuart nixon dotcomstu@gmail.com
 ADD ./apt/ubuntu-sources.list /etc/apt/sources.list
 
 # add local apt proxy
-RUN mkdir -p /etc/apt/apt.conf.d/ && echo 'Acquire::http { Proxy "http://10.9.1.9:3142"; };' >> /etc/apt/apt.conf.d/01proxy
+RUN mkdir -p /etc/apt/apt.conf.d/ && echo 'Acquire::http { Proxy "http://apt-cacher-ng:3142"; };' >> /etc/apt/apt.conf.d/01proxy
 
 # make apt non-interactive
 ENV DEBIAN_FRONTEND noninteractive
