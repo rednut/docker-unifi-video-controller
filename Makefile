@@ -3,23 +3,11 @@ NAME = unifi-video
 REPO = $(USER)/$(NAME)
 VERSION = $(shell touch VERSION && cat VERSION)
 
-check:
-	[ ! -f VERSION ] || ( echo "MISSING VERSION FILE" ; exit 42; )
-	pwd
-	ls
-stu:
-	echo $(VERSION)
-
-
 LVOL = /srv/data/apps/docker/unifi-video
-RVOL = /usr/lib/unifi-video
-
-
 
 .PHONY: all build test tag_latest release ssh
 
 all: build tag_latest run
-
 
 stop:
 	@docker stop $(NAME)
@@ -31,9 +19,9 @@ dockerps:
 	@docker ps | grep -i $(NAME)
 	@docker ps -a | grep -i $(NAME)
 
-clean: stop rmcontainer dockerps build_full
+clean: stop rmcontainer dockerps
 
-build: version_bump build_lite tag_latest
+build: version_bump build_full tag_latest
 
 build_lite:
 	@docker build -t="$(REPO):$(VERSION)" --rm  .
@@ -61,8 +49,8 @@ release: test tag_latest
 
 run: 
 	echo docker run -d --privileged -p 1935:1935 -p 7443:7443 -p 7080:7080 -p 6666:6666 -p 554:554 \
-                        -v $(LVOL)/data:/data/data \
-			-v $(LVOL)/logs:/data/logs \
+                        -v $(LVOL)/data:/var/lib/unifi-video \
+			-v $(LVOL)/logs:/var/log/unifi-video \
 			 --name=$(NAME) $(REPO):latest
 
 ip:

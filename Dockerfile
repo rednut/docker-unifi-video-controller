@@ -18,7 +18,7 @@ ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 16126D3A3E5C1192
 
-RUN apt-get update -q -y && apt-get install -q -y curl wget supervisor apt-utils lsb-release curl wget rsync
+RUN apt-get update  -y && apt-get install -q -y curl wget supervisor apt-utils lsb-release curl wget rsync util-linux
 
 RUN 	mkdir -p /var/log/supervisor /data/logs /data/data && \
   	touch /data/.unifi-video
@@ -40,30 +40,17 @@ RUN RUNLEVEL=1 apt-get install -q -y unifi-video
 # launcher config
 ADD ./supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-RUN	mkdir -p /data/data /data/logs && \
-	 ls -la /data/
+###RUN	mkdir -p /data/data /data/logs /data/data/videos && \
+###	 ls -la /data/
 	
-# link data dir
-#RUN 	cat /etc/passwd
-#RUN 	cat /etc/group
-#RUN 	chown -Rv unifi-video:unifi-video /data/logs /data/data
-#RUN	chmod -Rv a+rwX /data/data /data/logs
-
-
-
-# link data dir
-RUN 	ln -fs /data/data /usr/lib/unifi-video/data && \
-	ln -fs /data/data /var/lib/unifi-video && \
- 	ln -fs /data/logs /usr/lib/unifi-video && \
-	ln -fs /data/logs /var/log/unifi-video
-
-VOLUME /data
-VOLUME /data/data
-VOLUME /data/logs
+### link data dir
+##RUN 	ln -fs /data/data /usr/lib/unifi-video/data && \
+## 	ln -fs /data/logs /usr/lib/unifi-video/logs && \
+##	ln -fs /data/logs /var/log/unifi-video
 
 VOLUME /var/lib/unifi-video
 VOLUME /var/log/unifi-video
-VOLUME /usr/lib/unifi-video
+
 
 # The following ports are used on UniFi Video hosts:
 
