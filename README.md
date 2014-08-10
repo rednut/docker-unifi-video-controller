@@ -14,9 +14,7 @@ run the unifi video nvr controller.
 The unifi nvr controller repo will provide the .debs. The package requires mongodb, so if we dont
 include 10gen's official repo it will use stock debian mongo instead (current state)
 
-The supervisor.conf is provided to configure supervisord which is used to launch:
-- unifi contoller daemon
-- sshd to "debug" ***DEPRECIATED***
+The supervisor.conf is provided to configure supervisord which is used to launch the UniFi contoller daemon.
 
 	cd path/to/dockerfiledir
 	docker build -t=rednut/unifi-video .
