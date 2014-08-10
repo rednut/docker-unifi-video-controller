@@ -8,7 +8,7 @@ The Dockerfile will provision the image with ubuntu:latest and all the required 
 
 The UniFi NVR controller repo will provide the .debs. The package requires mongodb, so if we don't include 10gen's official repo it will use stock debian mongo instead (current state).
 
-The supervisor.conf is provided to configure supervisord which is used to launch the UniFi contoller daemon.
+The supervisor.conf is provided to configure supervisord which is used to launch the UniFi controller daemon.
 
 	git clone https://github.com/rednut/docker-unifi-video-controller.git
 	cd docker-unifi-video-controller
