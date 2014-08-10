@@ -1,11 +1,11 @@
 docker container for unifi video ncr controller
 ===============================================
+dockerisation of unifi video controller
 
-* dockerisation of unifi video controller
+building docker image
+---
 
-** building docker image
-
-git clone $dockerfile-unifi-video
+    git clone $dockerfile-unifi-video
 cd dockerfile-unifi-video
 
 the Dockerfile will provision the image with ubuntu:latest and all the required dependencies to 
@@ -35,5 +35,3 @@ or
                 -v /srv/data/apps/docker/unifi-video/data:/data/data \
                 -v /srv/data/apps/docker/unifi-video/logs:/data/logs \
                  --name=unifi-video rednut/unifi-video:latest
-
- 
