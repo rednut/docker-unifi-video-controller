@@ -46,9 +46,11 @@ release: test tag_latest
 # 7443, by user (HTTPS), by camera (HTTPS)
 # 7080, by user (HTTP), by camera (HTTP)
 # 6666, by camera (video push)
+# 7447 – RTSP re-streaming via controller
+
 
 run: 
-	echo docker run -d --privileged -p 1935:1935 -p 7443:7443 -p 7080:7080 -p 6666:6666 -p 554:554 \
+	docker run -d --privileged -p 1935:1935 -p 7443:7443 -p 7080:7080 -p 6666:6666 -p 554:554 -p 7447:7447 \
                         -v $(LVOL)/data:/var/lib/unifi-video \
 			-v $(LVOL)/logs:/var/log/unifi-video \
 			 --name=$(NAME) $(REPO):latest

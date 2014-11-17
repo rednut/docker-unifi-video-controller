@@ -1,0 +1,3 @@
+JSVC_EXTRA_OPTS="-nodetach -wait 40"
+
+
