@@ -3,7 +3,7 @@ NAME = unifi-video
 REPO = $(USER)/$(NAME)
 VERSION = $(shell touch VERSION && cat VERSION)
 
-LVOL = /srv/data/apps/docker/unifi-video
+LVOL = /docker/unifi-video
 
 .PHONY: all build test tag_latest release ssh
 
@@ -33,7 +33,7 @@ version_bump:
 	VERSION inc
 
 tag_latest:
-	docker tag $(REPO):$(VERSION) $(REPO):latest
+	docker tag -f $(REPO):$(VERSION) $(REPO):latest
 
 release: test tag_latest
 	@if ! docker images $(REPO) | awk '{ print $$2 }' | grep -q -F $(VERSION); then echo "$(REPO) version $(VERSION) is not yet built. Please run 'make build'"; false; fi
@@ -42,15 +42,20 @@ release: test tag_latest
 	@echo "*** Don't forget to create a tag. git tag rel-$(VERSION) && git push origin rel-$(VERSION)"
 
 
+rm:
+	docker stop $(NAME) || echo "container not running yet" && docker rm $(NAME) || echo "no container count yet"
+
+
 # 1935, by user (RTMP video)
 # 7443, by user (HTTPS), by camera (HTTPS)
 # 7080, by user (HTTP), by camera (HTTP)
 # 6666, by camera (video push)
 # 7447 – RTSP re-streaming via controller
+# 7446 stream
 
-
-run: 
-	docker run -d --privileged -p 1935:1935 -p 7443:7443 -p 7080:7080 -p 6666:6666 -p 554:554 -p 7447:7447 \
+run: rm 
+	docker run -d --privileged -p 1935:1935 -p 7443:7443 -p 7080:7080 -p 6666:6666 \
+										    -p 554:554 -p 7447:7447 -p 7446:7446 \
                         -v $(LVOL)/data:/var/lib/unifi-video \
 			-v $(LVOL)/logs:/var/log/unifi-video \
 			 --name=$(NAME) $(REPO):latest

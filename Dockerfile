@@ -67,7 +67,7 @@ VOLUME /var/log/unifi-video
 # 554 RTSP server (mandatory only on gen1)
 
 
-EXPOSE  7447 1935 7443 7080 6666 80 443 554 22
+EXPOSE  7447 7446 1935 7443 7080 6666 80 443 554 22
 
 
 # launcher config
