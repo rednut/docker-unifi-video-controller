@@ -20,7 +20,7 @@ RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 16126D3A3E5C119
 
 RUN \
 	apt-get update -y && \
-	apt-get install -q -y curl wget supervisor apt-utils lsb-release curl wget rsync util-linux && \
+	apt-get install -q -y curl wget supervisor apt-utils lsb-release curl wget rsync util-linux psmisc && \
 	mkdir -p /var/log/supervisor /data/logs /data/data && \
   	touch /data/.unifi-video
 
