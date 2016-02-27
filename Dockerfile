@@ -3,10 +3,9 @@
 # the unifi nvr video contoller is used to admin ubunquty ip cameras
 #
 #
-FROM rednut/ubuntu:latest
+FROM ubuntu:latest
 MAINTAINER stuart nixon dotcomstu@gmail.com
-ADD ./apt/ubuntu-sources.list /etc/apt/sources.list
-
+#ADD ./apt/ubuntu-sources.list /etc/apt/sources.list
 # add local apt proxy
 #RUN mkdir -p /etc/apt/apt.conf.d/ && echo 'Acquire::http { Proxy "http://apt-cacher-ng:3142"; };' >> /etc/apt/apt.conf.d/01proxy
 
@@ -16,8 +15,7 @@ ENV DEBIAN_FRONTEND noninteractive
 # stop running services on install
 #ENV RUNLEVEL 1
 
-RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 16126D3A3E5C1192
-
+#RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 16126D3A3E5C1192
 RUN \
 	apt-get update -y && \
 	apt-get install -q -y curl wget supervisor apt-utils lsb-release curl wget rsync util-linux psmisc && \
@@ -25,13 +23,15 @@ RUN \
   	touch /data/.unifi-video
 
 # add mongodb repo
-RUN 	apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10 && \
+RUN \
+ 	apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10 && \
 	echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' | tee /etc/apt/sources.list.d/mongodb.list
 
-
 # add ubnt repo
-RUN 	wget -q -O -  http://www.ubnt.com/downloads/unifi-video/apt/unifi-video.gpg.key | apt-key add - && \
+RUN \
+ 	wget -q -O -  http://www.ubnt.com/downloads/unifi-video/apt/unifi-video.gpg.key | apt-key add - && \
 	echo "deb [arch=amd64] http://www.ubnt.com/downloads/unifi-video/apt trusty ubiquiti" | tee /etc/apt/sources.list.d/ubiquity-video.list
+
 
 # update repos
 RUN apt-get update -q -y
@@ -76,4 +76,7 @@ ADD ./unifi-video.default /etc/default/unifi-video
 
 
 WORKDIR /usr/lib/unifi-video
-CMD ["/usr/bin/supervisord"]
+CMD ["java", "-Xmx256M", "-jar", "/usr/lib/unifi/lib/ace.jar", "start"]
+
+
+#CMD ["/usr/bin/supervisord"]

@@ -1,7 +1,10 @@
 USER = rednut
 NAME = unifi-video
-REPO = $(USER)/$(NAME)
-VERSION = $(shell touch VERSION && cat VERSION)
+REGISTRY = registry.rednut.net/
+REGISTRY = 
+REPO = $(REGISTRY)$(USER)/$(NAME)
+VERSION = latest
+#$(shell touch VERSION && cat VERSION)
 
 LVOL = /docker/unifi-video
 
@@ -30,7 +33,7 @@ build_full:
 	@docker build -t="$(REPO):$(VERSION)" --rm --no-cache .
 
 version_bump:
-	VERSION inc
+	#VERSION inc
 
 tag_latest:
 	docker tag -f $(REPO):$(VERSION) $(REPO):latest
@@ -54,11 +57,15 @@ rm:
 # 7446 stream
 
 run: rm 
-	docker run -d --privileged -p 1935:1935 -p 7443:7443 -p 7080:7080 -p 6666:6666 \
-										    -p 554:554 -p 7447:7447 -p 7446:7446 \
+	docker run -d \
+			--add-host=mongo:10.9.1.11 \
+			--privileged \
+			-p 1935:1935 -p 7443:7443 -p 7080:7080 -p 6666:6666 \
+			    -p 554:554 -p 7447:7447 -p 7446:7446 \
                         -v $(LVOL)/data:/var/lib/unifi-video \
 			-v $(LVOL)/logs:/var/log/unifi-video \
 			 --name=$(NAME) $(REPO):latest
+
 
 ip:
 	@ID=$$(docker ps | grep -F "$(REPO):$(VERSION)" | awk '{ print $$1 }') && \
