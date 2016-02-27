@@ -76,7 +76,13 @@ ADD ./unifi-video.default /etc/default/unifi-video
 
 
 WORKDIR /usr/lib/unifi-video
-CMD ["java", "-Xmx256M", "-jar", "/usr/lib/unifi/lib/ace.jar", "start"]
+#CMD ["java", "-Xmx256M", "-jar", "/usr/lib/unifi/lib/ace.jar", "start"]
 
 
 #CMD ["/usr/bin/supervisord"]
+CMD ["java", "-cp", "/usr/share/java/commons-daemon.jar:/usr/lib/unifi-video/lib/airvision.jar", "-Dav.tempdir=/var/cache/unifi-video", "-Djava.security.egd=file:/dev/./urandom", "-Djava.awt.headless=true", "-Dfile.encoding=UTF-8", "-Xmx1024M", "com.ubnt.airvision.Main", "start"]
+
+
+#/usr/lib/jvm/java-7-openjdk-amd64/jre/bin/java  -cp /usr/share/java/commons-daemon.jar:/usr/lib/unifi-video/lib/airvision.jar -pidfile /var/run/unifi-video/un
+#ifi-video.pid -procname unifi-video -nodetach -wait 40 -Dav.tempdir=/var/cache/unifi-video -Djava.security.egd=file:/dev/./urandom -Djava.awt.headless=true -D
+#file.encoding=UTF-8 -Xmx1024M com.ubnt.airvision.Main start

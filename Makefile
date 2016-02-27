@@ -1,6 +1,6 @@
 USER = rednut
 NAME = unifi-video
-REGISTRY = registry.rednut.net/
+#REGISTRY = registry.rednut.net/
 REGISTRY = 
 REPO = $(REGISTRY)$(USER)/$(NAME)
 VERSION = latest
@@ -10,7 +10,7 @@ LVOL = /docker/unifi-video
 
 .PHONY: all build test tag_latest release ssh
 
-all: build tag_latest run
+all: build  run
 
 stop:
 	@docker stop $(NAME)
@@ -56,12 +56,21 @@ rm:
 # 7447 – RTSP re-streaming via controller
 # 7446 stream
 
+
+# use either --link mongo:mongo
+# OR --add-host=mongo:10.9.1.11 
+
 run: rm 
 	docker run -d \
-			--add-host=mongo:10.9.1.11 \
+			--link mongo:mongo \
 			--privileged \
-			-p 1935:1935 -p 7443:7443 -p 7080:7080 -p 6666:6666 \
-			    -p 554:554 -p 7447:7447 -p 7446:7446 \
+			-p 1935:1935 \
+			-p 7443:7443 \
+			-p 7080:7080 \
+			-p 6666:6666 \
+			-p 554:554 \
+			-p 7447:7447 \
+			-p 7446:7446 \
                         -v $(LVOL)/data:/var/lib/unifi-video \
 			-v $(LVOL)/logs:/var/log/unifi-video \
 			 --name=$(NAME) $(REPO):latest
