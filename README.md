@@ -16,7 +16,7 @@ The supervisor.conf is provided to configure supervisord which is used to launch
 
 or 
 
-	docker pull rednut/unifi-video
+	docker pull rednut/unifi-video-controller
 
 Launching the UniFi video controller daemon
 ---
